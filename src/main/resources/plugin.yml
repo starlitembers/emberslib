@@ -1,0 +1,16 @@
+name: EmbersLib
+version: '${project.version}'
+main: me.starlitembers.emberslib.EmbersLib
+author: starlitembers
+api-version: '1.21'
+permissions:
+  cosmiclib.canseecredits:
+    default: true
+    description: Permission for players who are allowed to run the /credits command.
+  cosmiclib.commandapi.admin:
+    default: op
+    description: Default permission required for commands created using the Command API if permission isn't set already.
+commands:
+  credits:
+    permission: cosmiclib.canseecredits
+    description: List credits for every Life Plugin made using the Ember Life Library.
