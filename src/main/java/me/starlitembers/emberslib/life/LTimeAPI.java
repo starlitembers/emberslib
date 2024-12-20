@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
@@ -25,7 +26,8 @@ import java.util.function.Consumer;
 public class LTimeAPI implements Listener {
     final Plugin p;
     final DataAPI data;
-    BiFunction<PlayerDeathEvent, Integer, Integer> onDeath;
+    boolean enabled = true;
+    BiFunction<PlayerDeathEvent, Long, Long> onDeath;
     boolean shortenFinalHour = true;
     boolean shortenFinalMinute = false;
     public boolean getFinalHourShortened(){
@@ -57,7 +59,7 @@ public class LTimeAPI implements Listener {
             v.deserialize();
         });
     }
-    public void setDeathFunction(BiFunction<PlayerDeathEvent, Integer, Integer> bifunction){
+    public void setDeathFunction(BiFunction<PlayerDeathEvent, Long, Long> bifunction){
         this.onDeath = bifunction;
     }
     public void registerGlobalTimer(int startTime){
@@ -67,6 +69,7 @@ public class LTimeAPI implements Listener {
         return Optional.ofNullable(getTimer("global"));
     }
     void enable(){
+        enabled = true;
         p.getServer().getPluginManager().registerEvents(this, p);
     }
     @EventHandler
@@ -80,10 +83,10 @@ public class LTimeAPI implements Listener {
         data.unsafe().writeData(f, data.GSON.toJson(timerHashMap, new TypeToken<Map<String, LTimer>>(){}.getType()));
     }
     HashMap<String, LTimer> timerHashMap = new HashMap<>();
-    public int getPlayerTime(UUID player, String id) {
+    public long getPlayerTime(UUID player, String id) {
         return getTimer(id).getFinalTime(player);
     }
-    public int getPlayerTime(Player player, String id) {
+    public long getPlayerTime(Player player, String id) {
         return getPlayerTime(player.getUniqueId(), id);
     }
     public LTimer getTimer(String id){
@@ -104,17 +107,18 @@ public class LTimeAPI implements Listener {
     public BukkitTask registerTimer(String id, boolean positive, long delay, long period, Consumer<LTimer> consumer){
         if(getTimer(id) == null) return null;
         return Bukkit.getScheduler().runTaskTimer(EmbersLib.plugin(), () -> {
-            LTimer timer = getTimer(id);
-            if(timer.paused) return;
-            consumer.accept(timer);
-            if(positive){
-                timer.ticks++;
-            } else {
-                timer.ticks--;
+                LTimer timer = getTimer(id);
+                if(timer.paused) return;
+                consumer.accept(timer);
+                if(positive){
+                    timer.ticks++;
+                } else {
+                    timer.ticks--;
+                }
             }
-        }, delay, period);
+        , delay, period);
     }
-    public String formatTime(int ticks, boolean colored, LColorAPI LFColorAPI){
+    public String formatTime(int ticks, boolean colored, LColorAPI LFColorAPI, boolean hideSeconds, boolean hideMinutes, boolean hideHours, char censor){
         final int SECONDS_IN_MINUTE = 60;
         final int MINUTES_IN_HOUR = 60;
         final int TICKS_IN_SECOND = 20;
@@ -129,21 +133,35 @@ public class LTimeAPI implements Listener {
             String color = LFColorAPI.getColorByRule(ticks).toString();
             finalString.append(color);
         }
+        String temp;
 
-        String temp = hours > 9 ? hours+"" : "0"+hours;
+        if(hideHours) {
+            temp = censor+""+censor;
+        } else {
+            temp = hours > 9 ? hours+"" : "0"+hours;
+        }
 
         if(ticks >= 72000 || !shortenFinalHour){
             finalString.append(temp);
             finalString.append(":");
         }
-        temp = minutes % 60 > 9 % 60 ? minutes % 60+"" : "0"+minutes % 60;
+
+        if(hideMinutes) {
+            temp = censor+""+censor;
+        } else {
+            temp = minutes % 60 > 9 % 60 ? minutes % 60+"" : "0"+minutes % 60;
+        }
 
         if(ticks > 1200 || !shortenFinalMinute){
             finalString.append(temp);
             finalString.append(":");
         }
 
-        temp = seconds % 60 > 9 ? seconds % 60+"" : "0"+seconds % 60;
+        if(hideSeconds) {
+            temp = censor+""+censor;
+        } else {
+            temp = seconds % 60 > 9 ? seconds % 60+"" : "0"+seconds % 60;
+        }
 
         finalString.append(temp);
 

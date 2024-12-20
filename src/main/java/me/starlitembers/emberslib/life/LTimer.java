@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 
 public class LTimer {
-    int ticks;
+    long ticks;
     boolean paused;
     final String id;
     transient Type dataTypeRaw;
@@ -51,7 +51,7 @@ public class LTimer {
     public String getId(){
         return id;
     }
-    HashMap<UUID, Integer> offset = new HashMap<>();
+    HashMap<UUID, Long> offset = new HashMap<>();
     <T extends SerializableData> LTimer(String id, int startTicks, boolean paused, T data){
         this.ticks = startTicks;
         this.paused = paused;
@@ -63,43 +63,43 @@ public class LTimer {
     void initIfNull(){
         if(offset == null) offset = new HashMap<>();
     }
-    public int getGlobalTicks(){
+    public long getGlobalTicks(){
         return ticks;
     }
-    public void setGlobalTicks(int ticks){
+    public void setGlobalTicks(long ticks){
         this.ticks = ticks;
     }
-    public void resetTimer(int startTicks, boolean paused){
+    public void resetTimer(long startTicks, boolean paused){
         this.ticks = startTicks;
         this.paused = paused;
         offset = new HashMap<>();
     }
-    public int getOffset(UUID player){
-        if(!offset.containsKey(player)) offset.put(player, 0);
+    public long getOffset(UUID player){
+        if(!offset.containsKey(player)) offset.put(player, 0L);
         return offset.get(player);
     }
-    public int getFinalTime(UUID player){
+    public long getFinalTime(UUID player){
         return ticks - getOffset(player);
     }
-    public int getOffset(Player player){
+    public long getOffset(Player player){
         return getOffset(player.getUniqueId());
     }
-    public int getFinalTime(Player player){
+    public long getFinalTime(Player player){
         return getFinalTime(player.getUniqueId());
     }
-    public void setOffset(UUID player, int offset){
+    public void setOffset(UUID player, long offset){
         this.offset.put(player, offset);
     }
-    public void setFinalTime(UUID player, int ticks){
+    public void setFinalTime(UUID player, long ticks){
         setOffset(player, this.ticks - ticks);
     }
-    public void setFinalTime(Player player, int ticks){
+    public void setFinalTime(Player player, long ticks){
         setFinalTime(player.getUniqueId(), ticks);
     }
-    public void setOffset(Player player, int offset){
+    public void setOffset(Player player, long offset){
         setOffset(player.getUniqueId(), offset);
     }
-    public void addPlayer(UUID player, int offset){
+    public void addPlayer(UUID player, long offset){
         this.offset.put(player, offset);
     }
     public void removePlayer(UUID player){
@@ -111,22 +111,22 @@ public class LTimer {
     public boolean hasPlayer(Player player){
         return hasPlayer(player.getUniqueId());
     }
-    public void addPlayer(Player player, int offset){
+    public void addPlayer(Player player, long offset){
         addPlayer(player.getUniqueId(), offset);
     }
-    public void addTime(UUID player, int ticksToAdd){
+    public void addTime(UUID player, long ticksToAdd){
         setOffset(player, getOffset(player) - ticksToAdd);
     }
-    public void addTime(Player player, int ticksToAdd){
+    public void addTime(Player player, long ticksToAdd){
         addTime(player.getUniqueId(), ticksToAdd);
     }
-    public void removeTime(UUID player, int ticksToRemove){
+    public void removeTime(UUID player, long ticksToRemove){
         setOffset(player, getOffset(player) + ticksToRemove);
     }
-    public void removeTime(Player player, int ticksToRemove){
+    public void removeTime(Player player, long ticksToRemove){
         removeTime(player.getUniqueId(), ticksToRemove);
     }
-    public void forEach(BiConsumer<UUID, Integer> consumer){
+    public void forEach(BiConsumer<UUID, Long> consumer){
         this.offset.forEach(consumer);
     }
 }

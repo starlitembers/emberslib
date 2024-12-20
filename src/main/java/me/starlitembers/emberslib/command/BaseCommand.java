@@ -15,6 +15,7 @@ public class BaseCommand implements RunnableCommand {
     private TabCompletionType tab;
     private Consumer<CommandInfo> function;
     private Function<CommandInfo, List<String>> tabFunction;
+    private List<String> list;
     private String permission;
     private String permissionMessage;
     private List<String> aliases;
@@ -36,6 +37,7 @@ public class BaseCommand implements RunnableCommand {
         permissionMessage = ChatColor.RED+"You do not have permission to use this command.";
         aliases = new ArrayList<>();
         description = "A command created using the Ember Life Library.";
+        list = new ArrayList<>();
     }
     public boolean hasPermission(Player player){
         return player.hasPermission(permission);
@@ -45,6 +47,12 @@ public class BaseCommand implements RunnableCommand {
     }
     public void setTabCompletionType(TabCompletionType type){
         tab = type;
+    }
+    public List<String> getTabCompletionList(){
+        return list;
+    }
+    public void setTabCompletionList(List<String> list){
+        this.list = list;
     }
     public Function<CommandInfo, List<String>> getCustomTabCompletionFunction(){
         return tabFunction;

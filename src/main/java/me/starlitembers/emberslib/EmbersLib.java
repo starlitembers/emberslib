@@ -6,11 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class EmbersLib extends JavaPlugin {
     private static Plugin p;
-    private static EmbersLib inst;
-
-    public static EmbersLib instance(){
-        return inst;
-    }
 
     public static Plugin plugin(){
         return p;

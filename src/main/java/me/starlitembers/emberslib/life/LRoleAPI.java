@@ -47,6 +47,7 @@ public class LRoleAPI {
             Player chosenPlayer;
             LRole role = getRole(roleId);
             while(!chosen){
+                if(playersToRoll.isEmpty()) return;
                 int rng = random.nextInt(0, playersToRoll.size());
                 chosenPlayer = playersToRoll.get(rng);
                 if(!(role.hasRole(chosenPlayer) && !allowDuplicates)){
@@ -98,6 +99,7 @@ public class LRoleAPI {
             LRole role = getRole(roleIds[i]);
             Player chosenPlayer = null;
             while(!chosen){
+                if(playersToRoll.isEmpty()) return;
                 int rng = random.nextInt(0, playersToRoll.size());
                 chosenPlayer = playersToRoll.get(rng);
                 if(!(role.hasRole(chosenPlayer) && !allowDuplicates)){
@@ -162,6 +164,13 @@ public class LRoleAPI {
     }
     public void clearPlayerRoles(Player player){
         forEach((k, v) -> v.removePlayer(player));
+    }
+    public List<LRole> getPlayerRoles(UUID player){
+        List<LRole> roles = new ArrayList<>();
+        this.roles.forEach((k, v) -> {
+            if(v.getPlayers().contains(player)) roles.add(v);
+        });
+        return roles;
     }
     public boolean playerHasRole(UUID player, LRole... lRoles){
         for (LRole role : lRoles) {

@@ -12,6 +12,7 @@ public class SubCommand implements RunnableCommand {
     private final Set<SubCommand> commands;
     private TabCompletionType tab;
     private Consumer<CommandInfo> function;
+    private List<String> list;
     private Function<CommandInfo, List<String>> tabFunction;
     private SubCommand(){
         name = "";
@@ -24,12 +25,19 @@ public class SubCommand implements RunnableCommand {
         tabFunction = (info) -> null;
         function = (info) -> {};
         commands = new HashSet<>();
+        list = new ArrayList<>();
     }
     public TabCompletionType getTabCompletionType(){
         return tab;
     }
     public void setTabCompletionType(TabCompletionType type){
         tab = type;
+    }
+    public List<String> getTabCompletionList(){
+        return list;
+    }
+    public void setTabCompletionList(List<String> list){
+        this.list = list;
     }
     public Function<CommandInfo, List<String>> getCustomTabCompletion(){
         return tabFunction;

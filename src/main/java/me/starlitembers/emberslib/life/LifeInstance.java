@@ -9,6 +9,9 @@ import me.starlitembers.emberslib.recipe.RecipeAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.net.URISyntaxException;
+
 /**
  * The core of any fan-made Life Series twists made using this library.
  */
@@ -22,7 +25,15 @@ public abstract class LifeInstance {
     public LifeInstance(String id, Plugin plugin){
         this.plugin = plugin;
         LifeLib.addLifeInstance(id, this);
+
+        try {
+            file = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    protected File file;
 
     private final Plugin plugin;
     private boolean enabled = false;
@@ -69,6 +80,7 @@ public abstract class LifeInstance {
         }
         if(timeAPI != null){
             timeAPI.save();
+            timeAPI.enabled = false;
         }
         if(roleAPI != null){
             roleAPI.save();
@@ -92,6 +104,7 @@ public abstract class LifeInstance {
             if(healthAPI != null) healthAPI.enable();
             if(boogeymanAPI != null) boogeymanAPI.enable();
             if(timeAPI != null) timeAPI.enable();
+            if(taskAPI != null) taskAPI.enable(taskAPI);
         });
     }
     /**

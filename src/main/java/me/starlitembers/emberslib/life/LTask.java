@@ -14,14 +14,22 @@ public class LTask {
     private List<String> text = new ArrayList<>();
     private final int[] bound = new int[]{0, 0};
     private final String id;
-    public LTask(String id, int minValue, int maxValue, String... text){
+    private boolean hard;
+    public LTask(String id, boolean hard, int minValue, int maxValue, String... text){
         this.id = id;
+        setHard(hard);
         setText(text);
         setMinValue(minValue);
         setMaxValue(maxValue);
     }
     public String getId(){
         return id;
+    }
+    public boolean isHard(){
+        return hard;
+    }
+    public void setHard(boolean hard){
+        this.hard = hard;
     }
     public int getMinValue(){
         return bound[0];
@@ -37,9 +45,13 @@ public class LTask {
     }
     public void addTaskMeta(ItemStack book, Player owner){
         BookMeta meta = (BookMeta) book.getItemMeta();
-        meta.setAuthor("The Secretkeeper");
+        meta.setAuthor("The Secret Keeper");
         meta.setGeneration(BookMeta.Generation.TATTERED);
-        meta.setTitle(ChatColor.RED+owner.getName()+"'s Task");
+        if(owner == null){
+            meta.setTitle(ChatColor.RED+getId()+" Task");
+        } else {
+            meta.setTitle(ChatColor.RED+owner.getName()+"'s Task");
+        }
         meta.setPages(text);
         meta.setFireResistant(true);
         book.setItemMeta(meta);

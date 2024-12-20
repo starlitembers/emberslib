@@ -50,6 +50,9 @@ public class LPairAPI {
         });
         return getPairById(chosen.get());
     }
+    public void clear(){
+        pairs = new HashMap<>();
+    }
     public <T extends SerializableData> void distributePairs(List<Player> playersToChoose, boolean allowDuplicates, Class<T> dataType){
         boolean assigning = true;
         Random random = new Random();

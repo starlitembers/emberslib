@@ -1,0 +1,2 @@
+# Controls whether Life Instances should be enabled on server startup/reload
+enabled-on-startup: true

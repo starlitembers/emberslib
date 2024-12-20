@@ -16,6 +16,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Colored names in the TabList/Chat/NameTag that change depending on lives, time, or some custom value.
@@ -150,7 +151,7 @@ public class LColorAPI implements Listener {
     public void updatePlayerColor(UUID uuid, String timer, LTimeAPI time){
         if(mode != Mode.TIME) return;
         AtomicInteger colorIndex = new AtomicInteger(0);
-        AtomicInteger playerTime = new AtomicInteger(time.getPlayerTime(uuid, timer));
+        AtomicLong playerTime = new AtomicLong(time.getPlayerTime(uuid, timer));
         AtomicBoolean colChosen = new AtomicBoolean(false);
         timeColorRule.forEach((k, v)->{
             if(playerTime.get() <= k && !colChosen.get()){

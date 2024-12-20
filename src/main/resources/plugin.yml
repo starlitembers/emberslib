@@ -14,3 +14,6 @@ commands:
   credits:
     permission: cosmiclib.canseecredits
     description: List credits for every Life Plugin made using the Ember Life Library.
+  plugin:
+    permission: cosmiclib.commandapi.admin
+    description: Enable/disable plugins (experimental)

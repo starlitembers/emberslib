@@ -6,7 +6,7 @@
 
   <groupId>me.starlitembers</groupId>
   <artifactId>EmbersLib</artifactId>
-  <version>2.1.0</version>
+  <version>2.3.0</version>
   <packaging>jar</packaging>
 
   <name>EmbersLib</name>
@@ -51,7 +51,7 @@
 
   <repositories>
       <repository>
-          <id>spigotmc-repo</id>
+          <id>spigotmc-rep</id>
           <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
       </repository>
       <repository>
